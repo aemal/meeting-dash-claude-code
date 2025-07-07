@@ -1,0 +1,161 @@
+# Product Requirements Document (PRD)
+
+## Product Title: Meeting Minutes Viewer & Editor
+
+### Purpose
+
+This product is a web‑based application designed to view, create, and edit meeting minutes. The interface presents a list of meeting summaries in a tabular layout and enables users to view and edit individual meeting minutes through a side drawer with full Markdown editing and previewing capability.
+
+---
+
+## Functional Requirements
+
+### 1. Meeting Minutes Table View
+
+#### Description
+
+A table showing all existing meeting minutes.
+
+#### UI Components
+
+* **Table**
+
+  * Each **row** displays:
+
+    * **Meeting Title** (string)
+    * **Meeting Time** (datetime)
+  * Rows are clickable.
+
+#### Interactions
+
+* Clicking a row opens a drawer showing the meeting’s full content.
+* The table remains visible in the background when the drawer is open.
+
+---
+
+### 2. Meeting Minutes Detail View (Drawer)
+
+#### Description
+
+The drawer displays a single meeting minute in read‑only Markdown format.
+
+#### Features
+
+* Markdown content rendered using `react-markdown`.
+* Top‑right **edit icon**:
+
+  * Clicking it toggles into **edit mode** inside the same drawer.
+  * Fields turn into editable inputs (WYSIWYG editor on left, preview on right).
+
+---
+
+### 3. Add New Meeting Minute
+
+#### Trigger
+
+* **Button** on the top‑right corner of the main view: **Add Meeting Minutes**
+
+#### Behavior
+
+* Opens a drawer with:
+
+  * A **WYSIWYG Markdown editor** on the left.
+  * A **live Markdown preview** on the right.
+* Fields:
+
+  * **Meeting Title** (text)
+  * **Meeting Time** (datetime picker)
+  * **Meeting Content** (Markdown input + preview)
+* **Save** button:
+
+  * Writes the data to the database.
+  * Closes the drawer on success.
+  * Updates the table with the new row.
+
+---
+
+### 4. Edit Existing Meeting Minute
+
+#### Trigger
+
+* **Hover icon** (edit) on each row in the table or in the top‑right of the detail drawer.
+
+#### Behavior
+
+* Opens the same drawer as in 'Add New'.
+* Fields are pre‑filled with existing data.
+* On **Save**:
+
+  * Updates the record in the database.
+  * Closes the drawer and reflects changes in the table.
+
+---
+
+## UX Details
+
+* **Drawer‑Based Design**: All interactions (view, add, edit) occur in a drawer that slides in from the right.
+* There should be a cancel button as well if I don't want to save the changes.
+* **Persistent Table**: The meeting list remains visible in the background.
+* **Live Markdown Preview**: As the user types Markdown in the editor, the preview pane updates in real time.
+* **WYSIWYG Markdown Editing**: Editor supports rich text interactions (bold, italic, lists, etc.).
+
+---
+
+## Technical Stack
+
+### Frontend
+
+* **Next.js (latest version 15.1)**
+
+  * Dynamic routing for meeting detail in drawer via `useRouter`
+  * API routes (optional) for backend communication
+* **TypeScript**
+
+  * All components strictly typed
+  * Meeting object interface:
+
+```ts
+interface Meeting {
+  id: string;
+  title: string;
+  time: string;
+  content: string; // markdown
+  created_at: string;
+  updated_at: string;
+}
+```
+
+* **Tailwind CSS**
+
+  * Utility‑first CSS styling
+* **Hero UI**
+
+  * Component primitives (buttons, inputs, datetime pickers, drawer)
+* **react-markdown**
+
+  * Render Markdown in detail and preview panes
+* **Markdown Editor**
+
+  * `react-mde`, `@uiw/react-md-editor`, or similar with live preview
+
+### Backend
+
+* **Supabase**
+
+  * PostgreSQL‑based backend
+  * Table `meetings` with columns: id, title, time, content, created\_at, updated\_at
+  * Supabase JS SDK for CRUD
+  * Row‑level security policies (optional)
+  * Authentication (optional MVP)
+
+---
+
+## Non‑Functional Requirements
+
+* **Responsive Design**: Works on mobile, tablet, and desktop.
+* **Keyboard Accessibility**: All drawers and buttons accessible via keyboard.
+* **Error Handling**: Inline notifications for network or database errors.
+
+---
+
+---
